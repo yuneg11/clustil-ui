@@ -1,7 +1,12 @@
-import { ComponentExample } from "@/components/component-example";
+import { Dashboard } from "@/components/dashboard";
+import { ThemeProvider } from "@/components/theme";
 
 export function App() {
-return <ComponentExample />;
+  return (
+    <ThemeProvider defaultTheme="system">
+      <Dashboard />
+    </ThemeProvider>
+  );
 }
 
 export default App;
