@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import type { ConnectionStatus, DeltaData, Node, SSEMessage } from "@/types/dashboard";
+import type { ConnectionStatus, DeltaData, Node, SSEMessage } from "@/types";
 
-const SSE_URL = "http://localhost:3001/stream";
+const SSE_URL = `${import.meta.env.CLUSTIL_HOST}/stream`;
 const RECONNECT_DELAY = 10000;
 
 interface UseSSEResult {

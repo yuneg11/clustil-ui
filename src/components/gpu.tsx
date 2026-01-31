@@ -10,7 +10,7 @@ import {
 import { Spinner } from "@/components/ui/spinner";
 import { updateMemo } from "@/lib/memo";
 import { formatDistanceToNow } from "@/lib/utils";
-import type { GPU } from "@/types/dashboard";
+import type { GPU } from "@/types";
 import { ProgressBar } from "./progress-bar";
 
 interface GPUProps {

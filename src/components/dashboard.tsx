@@ -2,7 +2,7 @@ import { NodeCard } from "@/components/node";
 import { ThemeToggle } from "@/components/theme";
 import { Badge } from "@/components/ui/badge";
 import { useSSE } from "@/hooks/useSSE";
-import type { ConnectionStatus, Node } from "@/types/dashboard";
+import type { ConnectionStatus, Node } from "@/types";
 
 interface HeaderProps {
   connectionStatus: ConnectionStatus;
@@ -17,7 +17,9 @@ function Header({ connectionStatus }: HeaderProps) {
 
   return (
     <div className="grid grid-cols-[auto_1fr_auto] items-center mb-4">
-      <h1 className="text-2xl font-bold tracking-tight font-mono mr-3">Clustil</h1>
+      <h1 className="text-2xl font-bold tracking-tight font-mono mr-3">
+        {import.meta.env.CLUSTIL_NAME}
+      </h1>
       {isOnline ? (
         <Badge variant="default" className="gap-1.5">
           <span className="size-2 rounded-full bg-green-400 animate-pulse" />

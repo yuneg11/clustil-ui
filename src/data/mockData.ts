@@ -1,4 +1,4 @@
-import type { Node } from "@/types/dashboard";
+import type { Node } from "@/types";
 
 export const mockNodes: Node[] = [
   {
