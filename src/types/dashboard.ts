@@ -1,33 +1,57 @@
-export interface GPU {
+export interface Node {
   id: string;
-  index: number;
-  model: string;
+  name: string;
   temperature: number;
   utilization: number;
   memory: {
     used: number;
     total: number;
   };
-  memo?: {
-    text: string;
-    user: string;
-    timestamp: Date;
-  };
-  isActive: boolean;
+  gpus: GPU[];
 }
 
-export interface Node {
+export interface GPU {
   id: string;
+  index: number;
   name: string;
   temperature: number;
-  cpu: {
-    load: number;
-  };
-  ram: {
+  utilization: number;
+  memory: {
     used: number;
     total: number;
   };
-  status: "online" | "offline" | "warning";
-  os: string;
-  gpus: GPU[];
+  user?: {
+    name: string;
+    timestamp: Date;
+  };
+  memo?: string;
+}
+
+export type ConnectionStatus = "connected" | "disconnected";
+
+interface NodeDelta {
+  temperature: number;
+  utilization: number;
+  memory: { used: number };
+  gpus: Record<string, GPUDelta>;
+}
+
+interface GPUDelta {
+  temperature: number;
+  utilization: number;
+  memory: { used: number };
+  user?: {
+    name: string;
+    timestamp: Date;
+  };
+  memo?: string;
+}
+
+export interface DeltaData {
+  nodes: Record<string, NodeDelta>;
+}
+
+export interface SSEMessage {
+  type: "full" | "delta";
+  data: Node[] | DeltaData;
 }

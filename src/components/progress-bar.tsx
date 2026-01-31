@@ -15,12 +15,7 @@ interface ProgressBarProps {
 }
 
 // Override ProgressTrack background color
-function ProgressCustom({
-  className,
-  children,
-  value,
-  ...props
-}: ProgressPrimitive.Root.Props) {
+function ProgressCustom({ className, children, value, ...props }: ProgressPrimitive.Root.Props) {
   return (
     <ProgressPrimitive.Root
       value={value}
@@ -36,19 +31,14 @@ function ProgressCustom({
   );
 }
 
-export function ProgressBar({
-  label,
-  value,
-  max = 100,
-  unit,
-}: ProgressBarProps) {
+export function ProgressBar({ label, value, max = 100, unit }: ProgressBarProps) {
   const percentage = Math.round((value / max) * 100);
 
   return (
     <ProgressCustom value={percentage} className="gap-2 mb-0.5">
       <ProgressLabel className="leading-none">{label}</ProgressLabel>
       <ProgressValue className="text-foreground leading-none">
-        {() => (unit ? `${value} / ${max} ${unit}` : `${percentage} %`)}
+        {() => (unit ? `${value.toFixed(1)} / ${max} ${unit}` : `${percentage} %`)}
       </ProgressValue>
     </ProgressCustom>
   );

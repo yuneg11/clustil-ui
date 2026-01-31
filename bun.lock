@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "vite-app",
+      "name": "clustil",
       "dependencies": {
         "@base-ui/react": "^1.1.0",
         "@fontsource-variable/noto-sans": "^5.2.10",

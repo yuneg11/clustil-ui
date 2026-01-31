@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:server": "bun run server/index.ts",
     "build": "tsc -b && vite build",
     "format": "biome format",
     "format:fix": "biome format --write",

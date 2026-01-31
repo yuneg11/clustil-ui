@@ -1,22 +1,40 @@
 import { NodeCard } from "@/components/node";
 import { ThemeToggle } from "@/components/theme";
-import { mockNodes } from "@/data/mockData";
-import type { Node } from "@/types/dashboard";
+import { Badge } from "@/components/ui/badge";
+import { useSSE } from "@/hooks/useSSE";
+import type { ConnectionStatus, Node } from "@/types/dashboard";
 
-interface NodesSectionProps {
+interface HeaderProps {
+  connectionStatus: ConnectionStatus;
+}
+
+interface NodeListProps {
   nodes: Node[];
 }
 
-function Header() {
+function Header({ connectionStatus }: HeaderProps) {
+  const isOnline = connectionStatus === "connected";
+
   return (
-    <div className="grid grid-cols-[1fr_auto] items-center mb-4">
-      <h1 className="text-2xl font-bold tracking-tight font-mono">Clustil</h1>
+    <div className="grid grid-cols-[auto_1fr_auto] items-center mb-4">
+      <h1 className="text-2xl font-bold tracking-tight font-mono mr-3">Clustil</h1>
+      {isOnline ? (
+        <Badge variant="default" className="gap-1.5">
+          <span className="size-2 rounded-full bg-green-400 animate-pulse" />
+          Online
+        </Badge>
+      ) : (
+        <Badge variant="destructive" className="gap-1.5">
+          <span className="size-2 rounded-full bg-red-400 animate-pulse" />
+          Offline
+        </Badge>
+      )}
       <ThemeToggle />
     </div>
   );
 }
 
-function NodesSection({ nodes }: NodesSectionProps) {
+function NodeList({ nodes }: NodeListProps) {
   return (
     <div className="grid grid-cols-1 gap-5">
       {nodes.map((node) => (
@@ -27,11 +45,13 @@ function NodesSection({ nodes }: NodesSectionProps) {
 }
 
 export function Dashboard() {
+  const { nodes, connectionStatus } = useSSE();
+
   return (
     <div className="min-h-screen p-4 md:p-6">
       <div className="mx-auto max-w-[1200px]">
-        <Header />
-        <NodesSection nodes={mockNodes} />
+        <Header connectionStatus={connectionStatus} />
+        <NodeList nodes={nodes} />
       </div>
     </div>
   );

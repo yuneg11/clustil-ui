@@ -44,12 +44,8 @@ export function ThemeProvider({
     root.classList.remove("light", "dark");
 
     if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-
-      root.classList.add(systemTheme);
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      root.classList.add(prefersDark ? "dark" : "light");
       return;
     }
 
@@ -84,6 +80,7 @@ export function ThemeToggle() {
             <span className="sr-only">Toggle theme</span>
           </Button>
         }
+        className="hover:bg-muted"
       />
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme("light")}>
