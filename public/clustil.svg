@@ -1,0 +1,18 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <color id="clustil-color" value="#007BFF" />
+    </defs>
+
+    <rect x="4" y="4" width="56" height="56" rx="10" stroke="currentcolor" stroke-width="4"
+        color="url(#clustil-color)" />
+
+    <g fill="currentcolor" color="url(#clustil-color)">
+        <rect x="15" y="15" width="12" height="12" rx="2" />
+        <rect x="37" y="15" width="12" height="12" rx="2" />
+        <rect x="15" y="37" width="12" height="12" rx="2" />
+        <rect x="37" y="37" width="12" height="12" rx="2" />
+    </g>
+
+    <path d="M27 21H37M27 43H37M21 27V37M43 27V37" stroke="currentcolor" stroke-width="3"
+        stroke-linecap="round" color="url(#clustil-color)" />
+</svg>
