@@ -1,3 +1,4 @@
+import { CompactProvider, CompactToggle } from "@/components/compact";
 import { NodeCard } from "@/components/node";
 import { ThemeToggle } from "@/components/theme";
 import { Badge } from "@/components/ui/badge";
@@ -18,8 +19,8 @@ function Header({ connectionStatus }: HeaderProps) {
   const isError = connectionStatus === "error";
 
   return (
-    <div className="grid grid-cols-[auto_1fr_auto] items-center mb-4">
-      <h1 className="text-2xl font-bold tracking-tight font-mono mr-3">
+    <div className="grid grid-cols-[auto_auto_1fr_auto_auto] items-center gap-1 mb-4">
+      <h1 className="text-2xl font-bold tracking-tight font-mono mr-2">
         {import.meta.env.CLUSTIL_NAME}
       </h1>
       {isOnline ? (
@@ -33,6 +34,8 @@ function Header({ connectionStatus }: HeaderProps) {
           {isError ? "Error" : "Offline"}
         </Badge>
       )}
+      <span></span>
+      <CompactToggle />
       <ThemeToggle />
     </div>
   );
@@ -54,11 +57,13 @@ export function Dashboard() {
   const { nodes, connectionStatus } = useDataHook();
 
   return (
-    <div className="min-h-screen p-4 md:p-6">
-      <div className="mx-auto max-w-[1200px]">
-        <Header connectionStatus={connectionStatus} />
-        <NodeList nodes={nodes} />
+    <CompactProvider>
+      <div className="min-h-screen p-4 md:p-6">
+        <div className="mx-auto max-w-[1200px]">
+          <Header connectionStatus={connectionStatus} />
+          <NodeList nodes={nodes} />
+        </div>
       </div>
-    </div>
+    </CompactProvider>
   );
 }

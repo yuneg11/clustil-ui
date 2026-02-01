@@ -1,3 +1,4 @@
+import { useCompact } from "@/components/compact";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -53,12 +54,13 @@ export function NodeInfo({ node }: NodeProps) {
 }
 
 export function GPUList({ nodeId, gpus }: GPUListProps) {
+  const compact = useCompact();
   return (
     <div className="grid grid-cols-1 gap-3 p-4">
       {gpus.map((gpu, index) => (
         <div key={gpu.id}>
           <GPUItem nodeId={nodeId} gpu={gpu} />
-          {index < gpus.length - 1 && <Separator className="mt-3" />}
+          {index < gpus.length - 1 && !compact && <Separator className="mt-3" />}
         </div>
       ))}
     </div>
