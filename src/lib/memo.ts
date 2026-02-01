@@ -29,6 +29,47 @@ async function updateMemoAPI({
   return response.json();
 }
 
-const updateMemo = import.meta.env.MODE === "demo" ? updateMemoDemo : updateMemoAPI;
+async function updateMemoSaige({
+  nodeId,
+  gpuId,
+  text,
+}: UpdateMemoParams): Promise<{ success: boolean }> {
+  const { rowIndexMap } = await import("@/hooks/useSaige");
+
+  const key = `${nodeId}:${gpuId}`;
+  const idx = rowIndexMap.get(key);
+
+  if (idx === undefined) {
+    throw new Error(`No row index found for ${key}`);
+  }
+
+  const formBody = `${idx}=${encodeURIComponent(text)}`;
+
+  const response = await fetch("/update_user", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: formBody,
+    redirect: "manual",
+  });
+
+  if (
+    response.type === "opaqueredirect" ||
+    response.ok ||
+    (response.status >= 300 && response.status < 400)
+  ) {
+    return { success: true };
+  }
+
+  throw new Error("Failed to update memo");
+}
+
+const updateMemo =
+  import.meta.env.MODE === "demo"
+    ? updateMemoDemo
+    : import.meta.env.MODE === "saige"
+      ? updateMemoSaige
+      : updateMemoAPI;
 
 export { updateMemo };

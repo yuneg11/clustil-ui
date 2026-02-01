@@ -12,4 +12,33 @@ export default defineConfig({
     },
   },
   envPrefix: ["CLUSTIL_"],
+  server: {
+    proxy: {
+      "/socket.io": {
+        target: "http://gpu.saige.in",
+        changeOrigin: true,
+        ws: true,
+        xfwd: true,
+      },
+      "/update_user": {
+        target: "http://gpu.saige.in",
+        changeOrigin: true,
+      },
+    },
+  },
+  preview: {
+    proxy: {
+      "/socket.io": {
+        target: "http://gpu.saige.in",
+        changeOrigin: true,
+        ws: true,
+        xfwd: true,
+      },
+      "/update_user": {
+        target: "http://gpu.saige.in",
+        changeOrigin: true,
+      },
+    },
+    allowedHosts: ["lnx6.ws.saige.in"],
+  },
 });

@@ -3,6 +3,7 @@ import { NodeCard } from "@/components/node";
 import { ThemeToggle } from "@/components/theme";
 import { Badge } from "@/components/ui/badge";
 import { useDemo } from "@/hooks/useDemo";
+import { useSaige } from "@/hooks/useSaige";
 import { useSSE } from "@/hooks/useSSE";
 import type { ConnectionStatus, Node } from "@/types";
 
@@ -52,7 +53,12 @@ function NodeList({ nodes }: NodeListProps) {
 }
 
 export function Dashboard() {
-  const useDataHook = import.meta.env.MODE === "demo" ? useDemo : useSSE;
+  const useDataHook =
+    import.meta.env.MODE === "demo"
+      ? useDemo
+      : import.meta.env.MODE === "saige"
+        ? useSaige
+        : useSSE;
 
   const { nodes, connectionStatus } = useDataHook();
 
