@@ -1,21 +1,40 @@
-export interface Node {
+// Node types
+interface NodeBase {
   id: string;
   name: string;
-  temperature: number;
-  utilization: number;
+  active: boolean;
+  gpus: GPU[];
+}
+
+export interface NodeOnline extends NodeBase {
+  active: true;
+  temp: number;
+  util: number;
   memory: {
     used: number;
     total: number;
   };
-  gpus: GPU[];
 }
 
-export interface GPU {
+export interface NodeOffline extends NodeBase {
+  active: false;
+  gpus: GPUOffline[];
+}
+
+export type Node = NodeOnline | NodeOffline;
+
+// GPU types
+interface GPUBase {
   id: string;
   index: number;
   name: string;
-  temperature: number;
-  utilization: number;
+  active: boolean;
+}
+
+export interface GPUOnline extends GPUBase {
+  active: true;
+  temp: number;
+  util: number;
   memory: {
     used: number;
     total: number;
@@ -27,19 +46,35 @@ export interface GPU {
   memo?: string;
 }
 
-export type ConnectionStatus = "connected" | "disconnected";
-
-interface NodeDelta {
-  temperature: number;
-  utilization: number;
-  memory: { used: number };
-  gpus: Record<string, GPUDelta>;
+export interface GPUOffline extends GPUBase {
+  active: false;
+  user?: {
+    name: string;
+    timestamp: Date;
+  };
+  memo?: string;
 }
 
-interface GPUDelta {
-  temperature: number;
-  utilization: number;
-  memory: { used: number };
+export type GPU = GPUOnline | GPUOffline;
+
+// Connection status types
+export type ConnectionStatus = "connected" | "disconnected" | "error";
+
+// SSE message types
+// `active: true` should be updated via a full update
+export interface NodeDelta {
+  active?: false;
+  temp?: number;
+  util?: number;
+  memory?: { used: number };
+  gpus?: Record<string, GPUDelta>;
+}
+
+export interface GPUDelta {
+  active?: false;
+  temp?: number;
+  util?: number;
+  memory?: { used: number };
   user?: {
     name: string;
     timestamp: Date;

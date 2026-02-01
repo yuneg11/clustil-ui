@@ -11,7 +11,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { updateMemo } from "@/lib/memo";
 import { formatDistanceToNow } from "@/lib/utils";
 import type { GPU } from "@/types";
-import { ProgressBar } from "./progress-bar";
+import { ProgressBar, ProgressBarDisabled } from "./progress-bar";
 
 interface GPUProps {
   gpu: GPU;
@@ -32,12 +32,18 @@ export function GPUHeader({ gpu }: GPUProps) {
       </div>
       <div className="text-sm font-bold font-mono truncate">{gpu.name}</div>
       <div className="justify-self-end">
-        <Badge
-          variant={gpu.temperature >= 70 ? "destructive" : "secondary"}
-          className="text-[.6rem] hidden lg:block"
-        >
-          {gpu.temperature}°C
-        </Badge>
+        {gpu.active ? (
+          <Badge
+            variant={gpu.temp >= 70 ? "destructive" : "secondary"}
+            className="text-[.6rem] hidden lg:block"
+          >
+            {gpu.temp}°C
+          </Badge>
+        ) : (
+          <Badge variant="destructive" className="text-[.6rem]">
+            Offline
+          </Badge>
+        )}
       </div>
     </div>
   );
@@ -46,8 +52,17 @@ export function GPUHeader({ gpu }: GPUProps) {
 export function GPUInfo({ gpu }: GPUProps) {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <ProgressBar label="UTIL" value={gpu.utilization} />
-      <ProgressBar label="MEM" value={gpu.memory.used} max={gpu.memory.total} unit="GB" />
+      {gpu.active ? (
+        <>
+          <ProgressBar label="UTIL" value={gpu.util} />
+          <ProgressBar label="MEM" value={gpu.memory.used} max={gpu.memory.total} unit="GB" />
+        </>
+      ) : (
+        <>
+          <ProgressBarDisabled label="UTIL" />
+          <ProgressBarDisabled label="MEM" unit="GB" />
+        </>
+      )}
     </div>
   );
 }

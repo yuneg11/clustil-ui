@@ -14,6 +14,7 @@ interface NodeListProps {
 
 function Header({ connectionStatus }: HeaderProps) {
   const isOnline = connectionStatus === "connected";
+  const isError = connectionStatus === "error";
 
   return (
     <div className="grid grid-cols-[auto_1fr_auto] items-center mb-4">
@@ -28,7 +29,7 @@ function Header({ connectionStatus }: HeaderProps) {
       ) : (
         <Badge variant="destructive" className="gap-1.5">
           <span className="size-2 rounded-full bg-red-400 animate-pulse" />
-          Offline
+          {isError ? "Error" : "Offline"}
         </Badge>
       )}
       <ThemeToggle />

@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { GPU, Node } from "@/types";
 import { GPUItem } from "./gpu";
-import { ProgressBar } from "./progress-bar";
+import { ProgressBar, ProgressBarDisabled } from "./progress-bar";
 
 interface NodeProps {
   node: Node;
@@ -18,12 +18,15 @@ export function NodeHeader({ node }: NodeProps) {
   return (
     <div className="grid grid-cols-[1fr_auto] items-center">
       <h3 className="text-sm font-bold tracking-wide font-mono">{node.name}</h3>
-      <Badge
-        variant={node.temperature >= 70 ? "destructive" : "secondary"}
-        className="text-[.6rem]"
-      >
-        {node.temperature}°C
-      </Badge>
+      {node.active ? (
+        <Badge variant={node.temp >= 70 ? "destructive" : "secondary"} className="text-[.6rem]">
+          {node.temp}°C
+        </Badge>
+      ) : (
+        <Badge variant="destructive" className="text-[.6rem]">
+          Offline
+        </Badge>
+      )}
     </div>
   );
 }
@@ -33,8 +36,17 @@ export function NodeInfo({ node }: NodeProps) {
     <div className="grid grid-cols-1 gap-4">
       <NodeHeader node={node} />
       <div className="grid grid-cols-2 md:grid-cols-1 gap-4">
-        <ProgressBar label="CPU" value={node.utilization} />
-        <ProgressBar label="RAM" value={node.memory.used} max={node.memory.total} unit="GB" />
+        {node.active ? (
+          <>
+            <ProgressBar label="CPU" value={node.util} />
+            <ProgressBar label="RAM" value={node.memory.used} max={node.memory.total} unit="GB" />
+          </>
+        ) : (
+          <>
+            <ProgressBarDisabled label="CPU" />
+            <ProgressBarDisabled label="RAM" unit="GB" />
+          </>
+        )}
       </div>
     </div>
   );

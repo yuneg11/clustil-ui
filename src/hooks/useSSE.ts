@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import type { ConnectionStatus, DeltaData, Node, SSEMessage } from "@/types";
+import { useEffect, useState } from "react";
+import type { ConnectionStatus, DeltaData, GPU, Node, SSEMessage } from "@/types";
 
 const SSE_URL = `${import.meta.env.CLUSTIL_HOST}/stream`;
 const RECONNECT_DELAY = 10000;
@@ -10,74 +10,89 @@ interface UseSSEResult {
 }
 
 // Parse full nodes from server, converting timestamp strings to Date objects
-function parseFullNodes(
-  rawNodes: Node[],
-  pendingMemos: Map<string, { memo?: string; user?: { name: string; timestamp: Date } }>,
-): Node[] {
-  return rawNodes.map((node) => ({
+function parseFullNodes(rawNodes: unknown): Node[] {
+  const nodes = rawNodes as Array<
+    Omit<Node, "gpus"> & {
+      gpus: Array<
+        Omit<GPU, "user"> & {
+          user?: { name: string; timestamp: string };
+        }
+      >;
+    }
+  >;
+
+  return nodes.map((node) => ({
     ...node,
-    gpus: node.gpus.map((gpu) => {
-      // If this GPU is being edited, preserve its original memo/user
-      const pending = pendingMemos.get(gpu.id);
-      if (pending) {
-        return {
-          ...gpu,
-          memo: pending.memo,
-          user: pending.user,
-        };
-      }
-      return {
-        ...gpu,
-        user: gpu.user
-          ? {
-              ...gpu.user,
-              timestamp: new Date(gpu.user.timestamp as unknown as string),
-            }
-          : undefined,
-      };
-    }),
-  }));
+    gpus: node.gpus.map((gpu) => ({
+      ...gpu,
+      user: gpu.user
+        ? {
+            ...gpu.user,
+            timestamp: new Date(gpu.user.timestamp),
+          }
+        : undefined,
+    })),
+  })) as Node[];
 }
 
 // Apply delta updates to existing nodes
-function applyDelta(
-  prevNodes: Node[],
-  delta: DeltaData,
-  pendingMemos: Map<string, { memo?: string; user?: { name: string; timestamp: Date } }>,
-): Node[] {
+function applyDelta(prevNodes: Node[], delta: DeltaData): Node[] {
   return prevNodes.map((node) => {
     const nodeDelta = delta.nodes[node.id];
-    const updatedNode = nodeDelta
-      ? {
-          ...node,
-          temperature: nodeDelta.temperature,
-          utilization: nodeDelta.utilization,
-          memory: { ...node.memory, used: nodeDelta.memory.used },
-        }
-      : node;
 
+    // If no delta for this node, return unchanged
+    if (!nodeDelta) return node;
+
+    // Handle online nodes
+    if (node.active) {
+      return {
+        ...node,
+        temp: nodeDelta.temp ?? node.temp,
+        util: nodeDelta.util ?? node.util,
+        memory: {
+          ...node.memory,
+          used: nodeDelta.memory?.used ?? node.memory.used,
+        },
+        gpus: node.gpus.map((gpu) => {
+          const gpuDelta = nodeDelta?.gpus?.[gpu.id];
+          if (!gpuDelta) return gpu;
+
+          if (gpu.active) {
+            // GPU is online - can update all properties
+            return {
+              ...gpu,
+              temp: gpuDelta.temp ?? gpu.temp,
+              util: gpuDelta.util ?? gpu.util,
+              memory: {
+                ...gpu.memory,
+                used: gpuDelta.memory?.used ?? gpu.memory.used,
+              },
+              user: gpuDelta.user ?? gpu.user,
+              memo: gpuDelta.memo ?? gpu.memo,
+            };
+          }
+
+          // GPU is offline - only update user and memo
+          return {
+            ...gpu,
+            user: gpuDelta.user ?? gpu.user,
+            memo: gpuDelta.memo ?? gpu.memo,
+          };
+        }),
+      };
+    }
+
+    // Handle offline nodes - only update GPUs' user and memo
     return {
-      ...updatedNode,
-      gpus: updatedNode.gpus.map((gpu) => {
-        // Skip delta updates for GPUs being edited
-        if (pendingMemos.has(gpu.id)) {
-          return gpu;
-        }
-
-        const gpuDelta = nodeDelta?.gpus[gpu.id];
+      ...node,
+      gpus: node.gpus.map((gpu) => {
+        const gpuDelta = nodeDelta?.gpus?.[gpu.id];
+        if (!gpuDelta) return gpu;
 
         return {
           ...gpu,
-          temperature: gpuDelta?.temperature ?? gpu.temperature,
-          utilization: gpuDelta?.utilization ?? gpu.utilization,
-          memory: { ...gpu.memory, used: gpuDelta?.memory.used ?? gpu.memory.used },
-          user: gpuDelta?.user
-            ? {
-                ...gpuDelta.user,
-                timestamp: new Date(gpuDelta.user.timestamp as unknown as string),
-              }
-            : undefined,
-          memo: gpuDelta?.memo ?? gpu.memo,
+          user: gpuDelta.user ?? gpu.user,
+          memo: gpuDelta.memo ?? gpu.memo,
         };
       }),
     };
@@ -87,11 +102,6 @@ function applyDelta(
 export function useSSE(): UseSSEResult {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>("disconnected");
-
-  // Store memos for GPUs being edited so SSE doesn't overwrite them
-  const pendingMemosRef = useRef<
-    Map<string, { memo?: string; user?: { name: string; timestamp: Date } }>
-  >(new Map());
 
   useEffect(() => {
     let eventSource: EventSource | null = null;
@@ -110,18 +120,17 @@ export function useSSE(): UseSSEResult {
 
           switch (message.type) {
             case "full":
-              setNodes(parseFullNodes(message.data as Node[], pendingMemosRef.current));
+              setNodes(parseFullNodes(message.data as Node[]));
               break;
             case "delta":
-              setNodes((prev) =>
-                applyDelta(prev, message.data as DeltaData, pendingMemosRef.current),
-              );
+              setNodes((prev) => applyDelta(prev, message.data as DeltaData));
               break;
           }
 
           setConnectionStatus("connected");
         } catch (error) {
           console.error("Failed to parse SSE data:", error);
+          setConnectionStatus("error");
         }
       };
 
