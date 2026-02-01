@@ -1,6 +1,7 @@
 import { NodeCard } from "@/components/node";
 import { ThemeToggle } from "@/components/theme";
 import { Badge } from "@/components/ui/badge";
+import { useDemo } from "@/hooks/useDemo";
 import { useSSE } from "@/hooks/useSSE";
 import type { ConnectionStatus, Node } from "@/types";
 
@@ -48,7 +49,9 @@ function NodeList({ nodes }: NodeListProps) {
 }
 
 export function Dashboard() {
-  const { nodes, connectionStatus } = useSSE();
+  const useDataHook = import.meta.env.MODE === "demo" ? useDemo : useSSE;
+
+  const { nodes, connectionStatus } = useDataHook();
 
   return (
     <div className="min-h-screen p-4 md:p-6">
