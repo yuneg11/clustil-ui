@@ -33,7 +33,7 @@ bun install
 Standalone demo mode uses generated mock data, no backend required:
 
 ```bash
-bun dev:demo
+bun run dev:demo
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
@@ -43,13 +43,13 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 1. Start the development SSE server:
 
 ```bash
-bun dev:server
+bun run dev:server
 ```
 
 2. In another terminal, start the frontend:
 
 ```bash
-bun dev
+bun run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
@@ -75,24 +75,24 @@ CLUSTIL_HOST=http://your-server:3001
 
 ### Commands
 
-| Command          | Description                               |
-| ---------------- | ----------------------------------------- |
-| `bun dev`        | Start development server                  |
-| `bun dev:demo`   | Start in demo mode (mock data)            |
-| `bun dev:server` | Start the demo backend server (mock data) |
-| `bun build`      | Production build                          |
-| `bun build:demo` | Production build for standalone demo mode |
-| `bun preview`    | Preview production build                  |
-| `bun check`      | Run linter and formatter checks           |
-| `bun check:fix`   | Auto-fix linting and formatting issues     |
-| `bun prepare`    | Install git hooks for development         |
+| Command              | Description                               |
+| -------------------- | ----------------------------------------- |
+| `bun run dev`        | Start development server                  |
+| `bun run dev:demo`   | Start in demo mode (mock data)            |
+| `bun run dev:server` | Start the demo backend server (mock data) |
+| `bun run build`      | Production build                          |
+| `bun run build:demo` | Production build for standalone demo mode |
+| `bun run preview`    | Preview production build                  |
+| `bun run check`      | Run linter and formatter checks           |
+| `bun run check:fix`   | Auto-fix linting and formatting issues     |
+| `bun run prepare`    | Install git hooks for development         |
 
 ### Code Quality
 
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. Run `bun check:fix` before committing. Git hooks are configured via Husky to run checks automatically. To install git hooks, run:
+This project uses [Biome](https://biomejs.dev/) for linting and formatting. Run `bun run check:fix` before committing. Git hooks are configured via Husky to run checks automatically. To install git hooks, run:
 
 ```shell
-bun prepare
+bun run prepare
 ```
 
 ### Project Structure

@@ -20,9 +20,11 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx,json,css,md}": [
-      "bun scripts/whitespace.ts --write",
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
       "bun run check:fix"
+    ],
+    "*.{js,jsx,ts,tsx,json,css,md}": [
+      "bun scripts/whitespace.ts --write"
     ]
   },
   "dependencies": {

@@ -10,14 +10,14 @@ It displays node and GPU metrics (temperature, utilization, memory) via Server-S
 ## Development Commands
 
 ```bash
-bun install          # Install dependencies
-bun prepare          # Install Husky git hooks (run after clone)
-bun dev              # Start dev server (connects to backend at :3001)
-bun dev:demo         # Standalone demo mode with mock data (no backend needed)
-bun dev:server       # Start mock SSE backend server
-bun build            # Production build (runs TypeScript check first)
-bun check            # Run Biome linter + formatter checks
-bun check:fix        # Auto-fix linting and formatting issues
+bun install         # Install dependencies
+bun run prepare     # Install Husky git hooks (run after clone)
+bun run dev         # Start dev server (connects to backend at :3001)
+bun run dev:demo    # Standalone demo mode with mock data (no backend needed)
+bun run dev:server  # Start mock SSE backend server
+bun run build       # Production build (runs TypeScript check first)
+bun run check       # Run Biome linter + formatter checks
+bun run check:fix    # Auto-fix linting and formatting issues
 ```
 
 ## Architecture
