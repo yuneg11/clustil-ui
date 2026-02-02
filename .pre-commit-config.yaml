@@ -1,0 +1,40 @@
+repos:
+  - repo: builtin  # https://github.com/pre-commit/pre-commit-hooks
+    hooks:
+      # General text file checks
+      - id: trailing-whitespace              # Trim trailing whitespace
+        args: [--markdown-linebreak-ext=md]    # Allow markdown hard line breaks
+      - id: end-of-file-fixer                # Ensure newline at EOF
+      - id: mixed-line-ending                # Normalize or check line endings
+        args: [--fix=lf]                       # Fix line endings to LF
+      # Binary file checks
+      - id: fix-byte-order-marker            # Remove UTF-8 byte order marker
+      - id: check-added-large-files          # Prevent committing large files
+        args: [--maxkb=500]                    # More than 500KB is considered large
+      # File type specific checks
+      - id: check-json                       # Validate JSON files
+        exclude: tsconfig.*\.json$             # TypeScript config uses JSON5
+      - id: check-yaml                       # Validate YAML files
+      # File system checks
+      - id: check-case-conflict              # Check for files that would conflict in case-insensitive filesystems
+      - id: check-symlinks                   # Check for broken symlinks
+      # Git checks
+      - id: check-merge-conflict             # Check for merge conflicts
+      # - id: no-commit-to-branch              # Prevent committing to protected branches (e.g. main)
+      # Security checks
+      - id: detect-private-key               # Detect private keys
+
+  - repo: local
+    hooks:
+      - id: format-and-lint
+        alias: biome
+        name: format and lint
+        entry: bun run check:fix
+        language: system
+        files: \.(js|ts|jsx|tsx|json|html|css)$
+      - id: test-build
+        name: test build
+        entry: bun run build
+        language: system
+        stages: [pre-push]
+        pass_filenames: false

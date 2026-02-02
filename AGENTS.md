@@ -11,7 +11,7 @@ It displays node and GPU metrics (temperature, utilization, memory) via Server-S
 
 ```bash
 bun install         # Install dependencies
-bun run prepare     # Install Husky git hooks (run after clone)
+bun run init        # Install git hooks
 bun run dev         # Start dev server (connects to backend at :3001)
 bun run dev:demo    # Standalone demo mode with mock data (no backend needed)
 bun run dev:server  # Start mock SSE backend server
@@ -59,7 +59,7 @@ bunx shadcn@latest add <component-name>
 ## Code Quality
 
 - **Linter/Formatter**: Biome (not ESLint/Prettier)
-- **Pre-commit hooks**: Husky + lint-staged run checks automatically
+- **Pre-commit hooks**: prek run checks automatically
 - **TypeScript**: Strict mode enabled globally
 - Biome excludes `src/components/ui/*.tsx` from linting
 

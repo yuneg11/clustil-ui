@@ -84,15 +84,15 @@ CLUSTIL_HOST=http://your-server:3001
 | `bun run build:demo` | Production build for standalone demo mode |
 | `bun run preview`    | Preview production build                  |
 | `bun run check`      | Run linter and formatter checks           |
-| `bun run check:fix`   | Auto-fix linting and formatting issues     |
-| `bun run prepare`    | Install git hooks for development         |
+| `bun run check:fix`  | Auto-fix linting and formatting issues    |
+| `bun run init`       | Install git hooks for development         |
 
 ### Code Quality
 
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. Run `bun run check:fix` before committing. Git hooks are configured via Husky to run checks automatically. To install git hooks, run:
+This project uses [Biome](https://biomejs.dev/) for linting and formatting. Run `bun run check:fix` before committing. Git hooks are configured via prek to run checks automatically. To install git hooks, run:
 
 ```shell
-bun run prepare
+bun run init
 ```
 
 ### Project Structure

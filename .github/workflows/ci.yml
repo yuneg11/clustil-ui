@@ -26,8 +26,8 @@ jobs:
 
       - name: Check
         run: |
-          bunx biome ci
-          bun scripts/whitespace.ts
+          bun run biome ci
+          bun run prek run --all-files
 
       - name: Build
         run: bun run build
